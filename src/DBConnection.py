@@ -16,6 +16,7 @@ class DBConnect:
         """
         Это чтобы долго и нудно каждый раз не открывать и не закрывать подключение к DB
         """
+
         def wrapper(self, *args, **kwargs):
             con = sqlite3.connect(self.path_db)
             cur = con.cursor()
@@ -30,13 +31,14 @@ class DBConnect:
             cur.close()
             con.close()
             return res
+
         return wrapper
 
     def execute_script_from_file(self, path: str) -> None:
         self.execute_script(open(path, encoding="UTF-8").read())
 
     @cursor_decorator
-    def execute_script(self, script: str, cur: Cursor):
+    def execute_script(self, script: str, cur: Cursor) -> None:
         cur.executescript(script)
 
     def execute_from_file(self, path: str) -> list:
