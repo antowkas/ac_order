@@ -21,13 +21,14 @@ class DBConnect:
             cur = con.cursor()
             try:
                 res = func(self, *args, cur=cur, **kwargs)
+                con.commit()
             except Exception as E:
                 cur.close()
                 con.close()
+                print("Connection closed")
                 raise E
             cur.close()
             con.close()
-            print("Connection closed")
             return res
         return wrapper
 
@@ -37,6 +38,9 @@ class DBConnect:
     @cursor_decorator
     def execute_script(self, script: str, cur: Cursor):
         cur.executescript(script)
+
+    def execute_from_file(self, path: str) -> list:
+        return self.execute(open(path, encoding="UTF-8").read())
 
     @cursor_decorator
     def execute(self, response: str, cur: Cursor) -> list:
