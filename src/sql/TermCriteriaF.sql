@@ -1,4 +1,6 @@
-SELECT *
+SELECT 'Orders'.'orders_address', 'Orders'.'orders_date',
+'Product'.'product_name', 'Journal'.'quantity', 'Fabricator'.'fabricator_name',
+'Category'.'category_name'
 FROM 'Journal'
 JOIN 'Order' ON 'Journal'.'order_id' = 'Order'.'order_id'
 JOIN 'Product' ON 'Journal'.'product_id' = 'Product'.'product_id'
