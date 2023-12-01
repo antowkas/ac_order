@@ -72,11 +72,11 @@ class DBConnect:
         request += ', '.join(map(repr, values_list))
         self.execute(request)
 
-    def search_by_criteria(self, order_id="", product_name="", quantity="", fabricator_name=""):
+    def search_by_criteria(self, order_id="", product_name="", quantity="", fabricator_name="", category_name=""):
         product_name.lower()
         with open("sql/TermCriteriaF.sql") as file:
             script = file.read()
-        script.format(order_id, product_name, quantity, fabricator_name)
+        script = script.format(order_id, product_name, quantity, fabricator_name, category_name)
         return self.execute(script)
 
 
@@ -84,10 +84,10 @@ class DBConnect:
 if __name__ == '__main__':
     db = DBConnect("test.db")
     print(db.search_by_criteria(product_name="Макароны Макфа"))
-    print(db.execute("""
-        SELECT *
-        FROM `Journal`
-        JOIN `Order` ON `Journal`.`order_id` = `Order`.`order_id`
-        JOIN `Product` ON `Journal`.`product_id` = `Product`.`product_id`
-        JOIN `Category` ON `Product`.`category_id` = `Category`.`category_id`
-        JOIN `Fabricator` ON `Product`.`fabricator_id` = `Fabricator`.`fabricator_id`;"""))
+    # print(db.execute("""
+    #     SELECT *
+    #     FROM `Journal`
+    #     JOIN `Order` ON `Journal`.`order_id` = `Order`.`order_id`
+    #     JOIN `Product` ON `Journal`.`product_id` = `Product`.`product_id`
+    #     JOIN `Category` ON `Product`.`category_id` = `Category`.`category_id`
+    #     JOIN `Fabricator` ON `Product`.`fabricator_id` = `Fabricator`.`fabricator_id`;"""))
