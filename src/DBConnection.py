@@ -72,9 +72,18 @@ class DBConnect:
         request += ', '.join(map(repr, values_list))
         self.execute(request)
 
+    def search_by_criteria(self, order_id="", product_name="", quantity="", fabricator_name=""):
+        product_name.lower()
+        with open("sql/TermCriteriaF.sql") as file:
+            script = file.read()
+        script.format(order_id, product_name, quantity, fabricator_name)
+        return self.execute(script)
+
+
 
 if __name__ == '__main__':
     db = DBConnect("test.db")
+    print(db.search_by_criteria(product_name="Макароны Макфа"))
     print(db.execute("""
         SELECT *
         FROM `Journal`
