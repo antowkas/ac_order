@@ -83,7 +83,7 @@ class DBConnect:
 
 if __name__ == '__main__':
     db = DBConnect("test.db")
-    print(db.search_by_criteria(product_name="Макароны Макфа"))
+    print(db.search_by_criteria(product_name="Макароны Барилла"))
     # print(db.execute("""
     #     SELECT *
     #     FROM `Journal`
