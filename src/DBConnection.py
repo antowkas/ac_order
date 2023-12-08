@@ -73,6 +73,16 @@ class DBConnect:
         self.execute(request)
 
     def search_by_criteria(self, order_id="", product_name="", quantity="", fabricator_name="", category_name=""):
+        if not self.test_string(order_id):
+            raise ValueError("Bad order_id:", order_id)
+        if not self.test_string(product_name):
+            raise ValueError("Bad product_name:", product_name)
+        if not self.test_string(quantity):
+            raise ValueError("Bad quantity:", quantity)
+        if not self.test_string(fabricator_name):
+            raise ValueError("Bad fabricator_name:", fabricator_name)
+        if not self.test_string(category_name):
+            raise ValueError("Bad category_name:", category_name)
         product_name.lower()
         with open("sql/TermCriteriaF.sql") as file:
             script = file.read()
