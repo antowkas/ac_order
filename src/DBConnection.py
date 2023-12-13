@@ -65,10 +65,10 @@ class DBConnect:
         if columns_name is not None:
             request += f"({', '.join(columns_name)}) "
         request += "VALUES "
-        for values in values_list:
-            for value in values:
-                if isinstance(value, str) and not self.test_string(value):
-                    raise ValueError("Bad value:", value)
+        # for values in values_list:
+        #     for value in values:
+        #         if isinstance(value, str) and not self.test_string(value):
+        #             raise ValueError("Bad value:", value)
         request += ', '.join(map(repr, values_list))
         self.execute(request)
 
