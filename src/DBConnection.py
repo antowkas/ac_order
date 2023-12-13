@@ -89,6 +89,36 @@ class DBConnect:
         script = script.format(order_id, product_name, quantity, fabricator_name, category_name)
         return self.execute(script)
 
+    def insert_category(self, category_name):
+        if not self.test_string(category_name):
+            raise ValueError("Bad category name:", category_name)
+        self.insert("Category", [category_name], ("category_name",))
+
+    def insert_fabricator(self, fabricator_name):
+        if not self.test_string(fabricator_name):
+            raise ValueError("Bad fabricator name:", fabricator_name)
+        self.insert("Fabricator", [fabricator_name], ("fabricator_name",))
+
+    def insert_product(self, category_name, fabricator_name, product_name):
+        if not self.test_string(category_name):
+            raise ValueError("Bad category name:", category_name)
+        if not self.test_string(fabricator_name):
+            raise ValueError("Bad fabricator name:", fabricator_name)
+        if not self.test_string(product_name):
+            raise ValueError("Bad product name:", product_name)
+
+        if category_id := self.execute(f"SELECT category_id FROM Category WHERE category_name = \"{category_name}\""):
+            category_id = category_id[0][0]
+        else:
+            raise ValueError("Not find category name in DB: ", category_name)
+
+        if fabricator_id := self.execute(f"SELECT fabricator_id FROM Fabricator WHERE fabricator_name = \"{fabricator_name}\""):
+            fabricator_id = fabricator_id[0][0]
+        else:
+            raise ValueError("Not find fabricator name in DB: ", fabricator_name)
+
+        self.insert("Product", [category_id, fabricator_id, product_name],
+                    ("category_id", "fabricator_id", "product_name"))
 
 
 if __name__ == '__main__':
