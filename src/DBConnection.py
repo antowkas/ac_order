@@ -61,15 +61,16 @@ class DBConnect:
     def insert(self, table: str, values_list: list[tuple], columns_name: tuple = None) -> None:
         if not self.test_string(table):
             raise ValueError("Bad table name:", table)
-        request = f"INSERT INTO {table} "
+        request = f"INSERT INTO \"{table}\" "
         if columns_name is not None:
             request += f"({', '.join(columns_name)}) "
-        request += "VALUES "
+        request += "VALUES ("
         # for values in values_list:
         #     for value in values:
         #         if isinstance(value, str) and not self.test_string(value):
         #             raise ValueError("Bad value:", value)
-        request += ', '.join(map(repr, values_list))
+        request += ', '.join(map(repr, values_list)) + ')'
+        print(request)
         self.execute(request)
 
     def search_by_criteria(self, order_id="", product_name="", quantity="", fabricator_name="", category_name=""):
@@ -112,7 +113,8 @@ class DBConnect:
         else:
             raise ValueError("Not find category name in DB: ", category_name)
 
-        if fabricator_id := self.execute(f"SELECT fabricator_id FROM Fabricator WHERE fabricator_name = \"{fabricator_name}\""):
+        if fabricator_id := self.execute(
+                f"SELECT fabricator_id FROM Fabricator WHERE fabricator_name = \"{fabricator_name}\""):
             fabricator_id = fabricator_id[0][0]
         else:
             raise ValueError("Not find fabricator name in DB: ", fabricator_name)
@@ -120,14 +122,46 @@ class DBConnect:
         self.insert("Product", [category_id, fabricator_id, product_name],
                     ("category_id", "fabricator_id", "product_name"))
 
+    def insert_order(self, address: str, date: str):
+        if not self.test_string(address):
+            raise ValueError("Bad address name:", address)
+        if not self.test_string(date):
+            raise ValueError("Bad date:", date)
+
+        self.insert("Order", [address, date],
+                    ("order_address", "order_date"))
+
+        return self.execute('SELECT max("Order"."order_id") FROM "Order"')[0][0]
+
+    def insert_journal(self, order_id: int, product_name: str, quantity: int):
+        if not self.test_string(product_name):
+            raise ValueError("Bad product name:", product_name)
+        if product_id := self.execute(f"SELECT product_id FROM Product WHERE product_name = \"{product_name}\""):
+            product_id = product_id[0][0]
+        else:
+            raise ValueError("Not find category name in DB: ", product_name)
+        if not self.execute(f"SELECT order_id FROM \"Order\" WHERE order_id = {order_id}"):
+            raise ValueError("Not find order_id name in DB: ", order_id)
+        self.insert("Journal", [order_id, product_id, quantity],
+                    ("order_id", "product_id", "quantity"))
+
+    def create_order(self, address: str, date: str, products_quantity: list):
+        order_id = self.insert_order(address, date)
+        for product, quantity in products_quantity:
+            self.insert_journal(order_id, product, quantity)
+
 
 if __name__ == '__main__':
     db = DBConnect("test.db")
-    print(db.search_by_criteria(product_name="Макароны Барилла"))
-    # print(db.execute("""
-    #     SELECT *
-    #     FROM `Journal`
-    #     JOIN `Order` ON `Journal`.`order_id` = `Order`.`order_id`
-    #     JOIN `Product` ON `Journal`.`product_id` = `Product`.`product_id`
-    #     JOIN `Category` ON `Product`.`category_id` = `Category`.`category_id`
-    #     JOIN `Fabricator` ON `Product`.`fabricator_id` = `Fabricator`.`fabricator_id`;"""))
+    # db.create_order("Богородское", "13.12.2023", [["Макароны Барилла", 2], ["Сливки", 15]])
+
+    # db.insert_journal(1000, "Макароны Барилла", 1)
+    # print(db.insert_order("123", "123"))
+    # print(db.search_by_criteria(product_name="Макароны Барилла"))
+    print(db.execute("""
+        SELECT *
+        FROM `Journal`
+        JOIN `Order` ON `Journal`.`order_id` = `Order`.`order_id`
+        JOIN `Product` ON `Journal`.`product_id` = `Product`.`product_id`
+        JOIN `Category` ON `Product`.`category_id` = `Category`.`category_id`
+        JOIN `Fabricator` ON `Product`.`fabricator_id` = `Fabricator`.`fabricator_id`;"""))
