@@ -20,9 +20,9 @@ if __name__ == '__main__':
                 print("Goodbye...")
             case ["debug", x]:
                 if x == "True":
-                    db = DBConnect(config["path_db"], debug=True)
+                    db.debug = True
                 elif x == "False":
-                    db = DBConnect(config["path_db"], debug=False)
+                    db.debug = False
                 else:
                     print("Аргументом может быть только \"True\" или \"False\"")
             case ["input", level_name]:
@@ -30,7 +30,7 @@ if __name__ == '__main__':
                     args = []
                     max_arg_len = max(map(len, cmd_structure[level_name]))
                     for arg in cmd_structure[level_name]:
-                        if arg != "product_quantity_list":
+                        if arg != "product_quant_lst":
                             args.append(input(f"{arg}".ljust(max_arg_len)+" < "))
                         else:
                             product_quantity_list = []
