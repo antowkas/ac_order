@@ -1,10 +1,9 @@
 {
   "path_db": "test.db",
-  "db_structure": {
-    "Category": ["category_id", "category_name"],
-    "Fabricator": ["fabricator_id", "fabricator_name"],
-    "Product": ["product_id", "category_id", "fabricator_id", "product_name"],
-    "Order": ["order_id", "order_address", "order_date"],
-    "Journal": ["journal_id", "order_id", "product_id", "quantity"]
+  "cmd_structure": {
+    "Category": ["category_name"],
+    "Fabricator": ["fabricator_name"],
+    "Product": ["category_name", "fabricator_name", "product_name"],
+    "Order": ["order_address", "order_date", "product_quantity_list"]
   }
 }
