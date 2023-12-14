@@ -28,16 +28,17 @@ if __name__ == '__main__':
             case ["input", level_name]:
                 if level_name in input_func:
                     args = []
+                    max_arg_len = max(map(len, cmd_structure[level_name]))
                     for arg in cmd_structure[level_name]:
                         if arg != "product_quantity_list":
-                            args.append(input(f"{arg}".ljust(22)+" < "))
+                            args.append(input(f"{arg}".ljust(max_arg_len)+" < "))
                         else:
                             product_quantity_list = []
-                            product = input("Product or \"stop\"".ljust(22)+" < ")
+                            product = input("Product or \"stop\"".ljust(max_arg_len)+" < ")
                             while product not in ["stop", ""]:
-                                quantity = input(f"Quantity of \"{product}\"".ljust(22)+" < ")
+                                quantity = input(f"Quantity of \"{product}\"".ljust(max_arg_len)+" < ")
                                 product_quantity_list.append((product, quantity))
-                                product = input("Product or \"stop\"".ljust(22)+" < ")
+                                product = input("Product or \"stop\"".ljust(max_arg_len)+" < ")
                             args.append(product_quantity_list)
                     try:
                         input_func[level_name](*args)
