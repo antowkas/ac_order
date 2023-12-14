@@ -41,6 +41,8 @@ class DBConnect:
 
     @cursor_decorator
     def execute_script(self, script: str, cur: Cursor) -> None:
+        if self.debug:
+            print(script)
         cur.executescript(script)
 
     def execute_from_file(self, path: str) -> list:
