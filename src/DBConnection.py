@@ -7,8 +7,9 @@ from re import match as re_match
 class DBConnect:
     path_db: str
 
-    def __init__(self, path_db: str):
+    def __init__(self, path_db: str, debug=False):
         self.path_db = path_db
+        self.debug = debug
         if not isfile(path_db):
             self.execute_script_from_file("sql/create_db.sql")
 
@@ -47,6 +48,8 @@ class DBConnect:
 
     @cursor_decorator
     def execute(self, request: str, cur: Cursor) -> list:
+        if self.debug:
+            print(request)
         return cur.execute(request).fetchall()
 
     @staticmethod
@@ -58,7 +61,7 @@ class DBConnect:
         pattern = r'^[^;\'"\\]*$'
         return bool(re_match(pattern, string))
 
-    def insert(self, table: str, values_list: list[tuple], columns_name: tuple = None) -> None:
+    def insert(self, table: str, values_list, columns_name: tuple = None) -> None:
         if not self.test_string(table):
             raise ValueError("Bad table name:", table)
         request = f"INSERT INTO \"{table}\" "
@@ -70,7 +73,6 @@ class DBConnect:
         #         if isinstance(value, str) and not self.test_string(value):
         #             raise ValueError("Bad value:", value)
         request += ', '.join(map(repr, values_list)) + ')'
-        print(request)
         self.execute(request)
 
     def search_by_criteria(self, order_id="", product_name="", quantity="", fabricator_name="", category_name=""):
@@ -133,13 +135,18 @@ class DBConnect:
 
         return self.execute('SELECT max("Order"."order_id") FROM "Order"')[0][0]
 
-    def insert_journal(self, order_id: int, product_name: str, quantity: int):
+    def insert_journal(self, order_id: int, product_name: str, quantity: int | str):
+        if isinstance(quantity, str):
+            if quantity.isdigit():
+                quantity = int(quantity)
+            else:
+                raise ValueError(f"Bad quantity: {quantity}")
         if not self.test_string(product_name):
             raise ValueError("Bad product name:", product_name)
         if product_id := self.execute(f"SELECT product_id FROM Product WHERE product_name = \"{product_name}\""):
             product_id = product_id[0][0]
         else:
-            raise ValueError("Not find category name in DB: ", product_name)
+            raise ValueError("Not find product name in DB: ", product_name)
         if not self.execute(f"SELECT order_id FROM \"Order\" WHERE order_id = {order_id}"):
             raise ValueError("Not find order_id name in DB: ", order_id)
         self.insert("Journal", [order_id, product_id, quantity],
