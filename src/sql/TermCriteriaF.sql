@@ -1,4 +1,4 @@
-SELECT 'Order'.'order_address', 'Order'.'order_date',
+SELECT 'Order'.'order_id', 'Order'.'order_address', 'Order'.'order_date',
 'Product'.'product_name', 'Journal'.'quantity', 'Fabricator'.'fabricator_name',
 'Category'.'category_name'
 FROM 'Journal'

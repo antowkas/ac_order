@@ -94,6 +94,23 @@ class DBConnect:
         script = script.format(order_id, product_name, quantity, fabricator_name, category_name)
         return self.execute(script)
 
+    def show_category(self):
+        return [el[0] for el in self.execute("SELECT category_name FROM Category")]
+
+    def show_order(self):
+        return [el for el in self.execute("SELECT order_id, order_address, order_date FROM \"Order\"")]
+
+    def show_product(self):
+        return [el for el in
+                self.execute("SELECT Category.category_name, Fabricator.fabricator_name,"
+                             "       Product.product_name "
+                             "FROM Product "
+                             "JOIN Category ON Product.category_id = Category.category_id "
+                             "JOIN Fabricator ON Product.fabricator_id = Fabricator.fabricator_id")]
+
+    def show_fabricator(self):
+        return [el[0] for el in self.execute("SELECT fabricator_name FROM Fabricator")]
+
     def insert_category(self, category_name):
         if not self.test_string(category_name):
             raise ValueError("Bad category name:", category_name)
@@ -131,7 +148,6 @@ class DBConnect:
             raise ValueError("Bad address name:", address)
         if not self.test_string(date):
             raise ValueError("Bad date:", date)
-
         self.insert("Order", [address, date],
                     ("order_address", "order_date"))
 
@@ -167,10 +183,11 @@ if __name__ == '__main__':
     # db.insert_journal(1000, "Макароны Барилла", 1)
     # print(db.insert_order("123", "123"))
     # print(db.search_by_criteria(product_name="Макароны Барилла"))
-    print(db.execute("""
-        SELECT *
-        FROM `Journal`
-        JOIN `Order` ON `Journal`.`order_id` = `Order`.`order_id`
-        JOIN `Product` ON `Journal`.`product_id` = `Product`.`product_id`
-        JOIN `Category` ON `Product`.`category_id` = `Category`.`category_id`
-        JOIN `Fabricator` ON `Product`.`fabricator_id` = `Fabricator`.`fabricator_id`;"""))
+    print(db.show_order())
+    # print(db.execute("""
+    #     SELECT *
+    #     FROM `Journal`
+    #     JOIN `Order` ON `Journal`.`order_id` = `Order`.`order_id`
+    #     JOIN `Product` ON `Journal`.`product_id` = `Product`.`product_id`
+    #     JOIN `Category` ON `Product`.`category_id` = `Category`.`category_id`
+    #     JOIN `Fabricator` ON `Product`.`fabricator_id` = `Fabricator`.`fabricator_id`;"""))
