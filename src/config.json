@@ -1,5 +1,5 @@
 {
-  "path_db": "test.db",
+  "path_db": "database.db",
   "cmd_structure": {
     "Category": ["category_name"],
     "Fabricator": ["fabricator_name"],

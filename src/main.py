@@ -78,5 +78,5 @@ if __name__ == '__main__':
                       "Доступные уровни:\n\t- " +
                       "\n\t- ".join(cmd_structure))
             case req:
-                print(f"Неверный запрос.\nДля помощи введите \"help\"")
+                print("Неверный запрос.\nДля помощи введите \"help\"")
         inp = input()
