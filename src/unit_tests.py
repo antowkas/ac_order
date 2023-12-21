@@ -31,7 +31,7 @@ class Testing:
             print(f"[{answ[res]}] {func.__name__} {postfix}")
             
 @Testing.add_test
-def adding_test():
+def view_test():
     db = DBConnect("_test.db")
 
     res = db.show_category() + db.show_order() + db.show_product() + db.show_fabricator()
