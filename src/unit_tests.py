@@ -31,6 +31,15 @@ class Testing:
             print(f"[{answ[res]}] {func.__name__} {postfix}")
             
 @Testing.add_test
+def criteria_test():
+    db = DBConnect("_test.db")
+
+    res = db.search_by_criteria("1", "Макароны Барилла", "4", "Barilla", "Макаронные изделия")
+
+    return [(1, 'Улица Пушника, Дом колотушкина', '25.11.2023',
+             'Макароны Барилла',4, 'Barilla', 'Макаронные изделия')] == res    
+
+@Testing.add_test
 def view_test():
     db = DBConnect("_test.db")
 
