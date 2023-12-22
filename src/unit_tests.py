@@ -43,6 +43,29 @@ def view_test():
             ('Макаронные изделия', 'MAKFA', 'Макароны Макфа'), ('Молочные изделия', 'Весёлый молочник', 'Сливки'),
             ('Кондитерские изделия', 'Milka', 'Мятный шоколад Milka'), 'MAKFA', 'Barilla', 'Весёлый молочник',
             'Milka'] == res
+@Testing.add_test
+def adding_test():
+    if os_isfile("adding_test.db"):
+        os_remove("adding_test.db")
+    db = DBConnect("adding_test.db")
+    #    levels = ["Category", "Fabricator", "Product", "Order"]
+    # db.insert_category, db.insert_fabricator, db.insert_product, db.create_order
+    db.insert_category("category")
+    db.insert_fabricator("fabricator")
+    order_id = db.insert_order("address", "01.01.2023")
+    db.insert_product("category", "fabricator", "product")
+    db.insert_journal(order_id, "product", 1)
+    db.create_order("address2", "02.01.2023", [("product", 1)])
 
+    res = db.execute("""
+        SELECT *
+        FROM `Journal`
+        JOIN `Order` ON `Journal`.`order_id` = `Order`.`order_id`
+        JOIN `Product` ON `Journal`.`product_id` = `Product`.`product_id`
+        JOIN `Category` ON `Product`.`category_id` = `Category`.`category_id`
+        JOIN `Fabricator` ON `Product`.`fabricator_id` = `Fabricator`.`fabricator_id`;""")
+
+    return [(1, 1, 1, 1, 1, 'address', '01.01.2023', 1, 1, 1, 'product', 1, 'category', 1, 'fabricator'),
+            (2, 2, 1, 1, 2, 'address2', '02.01.2023', 1, 1, 1, 'product', 1, 'category', 1, 'fabricator')] == res    
 if __name__ == "__main__":
     Testing.run()
