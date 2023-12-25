@@ -29,7 +29,8 @@ class Testing:
                 postfix, res = f": {res}", 2
 
             print(f"[{answ[res]}] {func.__name__} {postfix}")
-            
+
+
 @Testing.add_test
 def criteria_test():
     db = DBConnect("_test.db")
@@ -37,7 +38,8 @@ def criteria_test():
     res = db.search_by_criteria("1", "Макароны Барилла", "4", "Barilla", "Макаронные изделия")
 
     return [(1, 'Улица Пушника, Дом колотушкина', '25.11.2023',
-             'Макароны Барилла',4, 'Barilla', 'Макаронные изделия')] == res    
+             'Макароны Барилла', 4, 'Barilla', 'Макаронные изделия')] == res
+
 
 @Testing.add_test
 def view_test():
@@ -52,6 +54,8 @@ def view_test():
             ('Макаронные изделия', 'MAKFA', 'Макароны Макфа'), ('Молочные изделия', 'Весёлый молочник', 'Сливки'),
             ('Кондитерские изделия', 'Milka', 'Мятный шоколад Milka'), 'MAKFA', 'Barilla', 'Весёлый молочник',
             'Milka'] == res
+
+
 @Testing.add_test
 def adding_test():
     if os_isfile("adding_test.db"):
@@ -75,6 +79,8 @@ def adding_test():
         JOIN `Fabricator` ON `Product`.`fabricator_id` = `Fabricator`.`fabricator_id`;""")
 
     return [(1, 1, 1, 1, 1, 'address', '01.01.2023', 1, 1, 1, 'product', 1, 'category', 1, 'fabricator'),
-            (2, 2, 1, 1, 2, 'address2', '02.01.2023', 1, 1, 1, 'product', 1, 'category', 1, 'fabricator')] == res    
+            (2, 2, 1, 1, 2, 'address2', '02.01.2023', 1, 1, 1, 'product', 1, 'category', 1, 'fabricator')] == res
+
+
 if __name__ == "__main__":
     Testing.run()
